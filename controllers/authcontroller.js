@@ -3,6 +3,14 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PASS
+    }
+});
+
 export const signUp = async (req, res) => {
     try {
         let { name, email, password, isDealer, dealerCode } = req.body;
@@ -133,15 +141,7 @@ export const sendOtp = async (req, res) => {
                 otpExpiresAt: Date.now() + 5 * 60 * 1000
             }
         );
-
-        const transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-                user: process.env.EMAIL,
-                pass: process.env.EMAIL_PASS
-            }
-        });
-
+        
         await transporter.sendMail({
             from: process.env.EMAIL,
             to: email,
@@ -158,7 +158,7 @@ export const sendOtp = async (req, res) => {
         console.log(error);
         res.status(500).json({
             success: false,
-            message: "OTP sending failed"
+            message: error.message
         });
     }
 };
