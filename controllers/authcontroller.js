@@ -1,19 +1,9 @@
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
-const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    family: 4,
-    connectionTimeout: 10000,
-    auth: {
-        user: process.env.EMAIL,
-        pass: process.env.EMAIL_PASS
-    }
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const signUp = async (req, res) => {
     try {
@@ -146,11 +136,11 @@ export const sendOtp = async (req, res) => {
             }
         );
 
-        await transporter.sendMail({
-            from: process.env.EMAIL,
+        await resend.emails.send({
+            from: "onboarding@resend.dev",
             to: email,
             subject: "Email Verification OTP",
-            text: `Your verification OTP is ${otp}. It will expire in 5 minutes.`
+            text: `Your verification OTP is ${otp}`
         });
 
         res.status(200).json({
