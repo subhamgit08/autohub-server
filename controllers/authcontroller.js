@@ -78,8 +78,8 @@ export const login = async (req, res) => {
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
         res.cookie("token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
+            secure: true,
+            sameSite: "none",
             maxAge: 24 * 60 * 60 * 1000,
         });
         res.status(200).json({
@@ -182,8 +182,8 @@ export const verifyOtp = async (req, res) => {
         }
 
         user.isVerified = true;
-        user.otp = ""; 
-        user.otpExpiresAt = undefined; 
+        user.otp = "";
+        user.otpExpiresAt = undefined;
         await user.save();
 
         return res.status(200).json({

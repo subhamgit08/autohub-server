@@ -17,6 +17,7 @@ app.use(cors({
     credentials: true                
 }));
 app.use(express.json());
+app.set("trust proxy", 1);
 
 app.use("/api/auth",authroutes);
 app.use("/api/cars",carRoutes);
