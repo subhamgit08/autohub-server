@@ -4,7 +4,10 @@ import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
-    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    connectionTimeout: 10000,
     auth: {
         user: process.env.EMAIL,
         pass: process.env.EMAIL_PASS
@@ -141,7 +144,7 @@ export const sendOtp = async (req, res) => {
                 otpExpiresAt: Date.now() + 5 * 60 * 1000
             }
         );
-        
+
         await transporter.sendMail({
             from: process.env.EMAIL,
             to: email,
