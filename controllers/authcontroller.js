@@ -143,13 +143,13 @@ export const sendOtp = async (req, res) => {
             }
         );
 
-        await sgMail.send({
-            to: email,
-            from: VERIFIED_EMAIL, 
-            subject: "Email Verification OTP",
-            text: `Your verification OTP is ${otp}`,
-            html: `<strong>Your verification OTP is ${otp}</strong>`,
-        });
+        // await sgMail.send({
+        //     to: email,
+        //     from: VERIFIED_EMAIL, 
+        //     subject: "Email Verification OTP",
+        //     text: `Your verification OTP is ${otp}`,
+        //     html: `<strong>Your verification OTP is ${otp}</strong>`,
+        // });
 
         // await resend.emails.send({
         //     from: "onboarding@resend.dev",
@@ -160,10 +160,12 @@ export const sendOtp = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            message: "OTP sent successfully"
+            message: "OTP sent successfully",
+            otp: otp
         });
 
     } catch (error) {
+        
         console.log(error);
         res.status(500).json({
             success: false,
@@ -234,16 +236,17 @@ export const forgotPassword = async (req, res) => {
         //     text: `Your password reset OTP is ${otp}`
         // });
 
-        await sgMail.send({
-            to: email,
-            from: VERIFIED_EMAIL,
-            subject: "Password Reset OTP",
-            text: `Your password reset OTP is ${otp}`,
-            html: `<strong>Your password reset OTP is ${otp}</strong>`,
-        });
+        // await sgMail.send({
+        //     to: email,
+        //     from: VERIFIED_EMAIL,
+        //     subject: "Password Reset OTP",
+        //     text: `Your password reset OTP is ${otp}`,
+        //     html: `<strong>Your password reset OTP is ${otp}</strong>`,
+        // });
 
         res.json({
-            message: "OTP sent to email"
+            message: "OTP sent",
+            otp: otp
         });
 
     } catch (error) {
