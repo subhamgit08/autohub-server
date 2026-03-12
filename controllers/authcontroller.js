@@ -2,8 +2,15 @@ import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { Resend } from "resend";
+import sgMail from "@sendgrid/mail"; // 1. Changed import
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// 2. Initialize SendGrid with your API Key
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+// Helper function to keep code clean
+const VERIFIED_EMAIL = "subhamdasexampurpose@gmail.com";
+
+// const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const signUp = async (req, res) => {
     try {
@@ -136,12 +143,20 @@ export const sendOtp = async (req, res) => {
             }
         );
 
-        await resend.emails.send({
-            from: "onboarding@resend.dev",
+        await sgMail.send({
             to: email,
+            from: VERIFIED_EMAIL, 
             subject: "Email Verification OTP",
-            text: `Your verification OTP is ${otp}`
+            text: `Your verification OTP is ${otp}`,
+            html: `<strong>Your verification OTP is ${otp}</strong>`,
         });
+
+        // await resend.emails.send({
+        //     from: "onboarding@resend.dev",
+        //     to: email,
+        //     subject: "Email Verification OTP",
+        //     text: `Your verification OTP is ${otp}`
+        // });
 
         res.status(200).json({
             success: true,
@@ -212,11 +227,19 @@ export const forgotPassword = async (req, res) => {
 
         await user.save();
 
-        await resend.emails.send({
-            from: "onboarding@resend.dev",
+        // await resend.emails.send({
+        //     from: "onboarding@resend.dev",
+        //     to: email,
+        //     subject: "Password Reset OTP",
+        //     text: `Your password reset OTP is ${otp}`
+        // });
+
+        await sgMail.send({
             to: email,
+            from: VERIFIED_EMAIL,
             subject: "Password Reset OTP",
-            text: `Your password reset OTP is ${otp}`
+            text: `Your password reset OTP is ${otp}`,
+            html: `<strong>Your password reset OTP is ${otp}</strong>`,
         });
 
         res.json({
